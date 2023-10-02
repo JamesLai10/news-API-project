@@ -18,7 +18,6 @@ describe("GET /api/topics", () => {
     return request(app)
       .get("/api/topics")
       .then((response) => {
-        console.log(response.body.topic);
         expect(response.status).toBe(200);
         expect(Array.isArray(response.body.topic)).toBe(true);
         expect(response.body.topic.length).toBe(3);
