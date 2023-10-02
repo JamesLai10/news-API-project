@@ -18,13 +18,16 @@ describe("GET /api/topics", () => {
     return request(app)
       .get("/api/topics")
       .then((response) => {
+        console.log(response.body.topic);
         expect(response.status).toBe(200);
         expect(Array.isArray(response.body.topic)).toBe(true);
         expect(response.body.topic.length).toBe(3);
-        const allObjects = response.body.topic.every((element) => {
-          return typeof element === "object";
+        const expectedProperties = ["slug", "description"];
+        response.body.topic.forEach((element) => {
+          expectedProperties.forEach((property) => {
+            expect(element).toHaveProperty(property);
+          });
         });
-        expect(allObjects).toBe(true);
       });
   });
 });
