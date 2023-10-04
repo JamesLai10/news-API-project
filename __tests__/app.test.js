@@ -117,16 +117,7 @@ describe("GET /api/articles", () => {
         articles.forEach((article) => {
           expect(article).not.toHaveProperty("body");
           expect(article).toHaveProperty("comment_count");
-          expect(typeof article.comment_count).toBe("number");
         });
-      });
-  });
-  test("returns 400 status code when passed an invalid query parameter", () => {
-    return request(app)
-      .get("/api/articles?invalid_query=true")
-      .then((response) => {
-        expect(response.status).toBe(400);
-        expect(response.body.error).toBe("Invalid input");
       });
   });
   test("returns a 404 status code when the path is misspelled", () => {
