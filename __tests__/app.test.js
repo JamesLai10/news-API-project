@@ -62,7 +62,7 @@ describe("GET /api/articles/:article_id", () => {
         expect(response.status).toBe(200);
         expect(response.body).toHaveProperty("article");
         const article = response.body.article;
-
+        expect(article.article_id).toBe(1);
         expect(article.title).toBe("Living in the shadow of a great man");
         expect(article.topic).toBe("mitch");
         expect(article.author).toBe("butter_bridge");
@@ -97,6 +97,45 @@ describe("GET /api/articles/:article_id", () => {
         expect(response.status).toBe(404);
         expect(response.error.message).toBe(
           "cannot GET /api/articlessss/1 (404)"
+        );
+      });
+  });
+});
+
+describe("GET /api/articles", () => {
+  test("returns 200 status code and an array of articles sorted by date in descending order", () => {
+    return request(app)
+      .get("/api/articles")
+      .then((response) => {
+        const articles = response.body.articles;
+        expect(response.status).toBe(200);
+        expect(Array.isArray(articles)).toBe(true);
+        expect(articles.length).toBe(13);
+        expect(articles).toBeSortedBy("created_at", {
+          descending: true,
+        });
+        articles.forEach((article) => {
+          expect(article).not.toHaveProperty("body");
+          expect(article).toHaveProperty("comment_count");
+          expect(typeof article.comment_count).toBe("number");
+        });
+      });
+  });
+  test("returns 400 status code when passed an invalid query parameter", () => {
+    return request(app)
+      .get("/api/articles?invalid_query=true")
+      .then((response) => {
+        expect(response.status).toBe(400);
+        expect(response.body.error).toBe("Invalid input");
+      });
+  });
+  test("returns a 404 status code when the path is misspelled", () => {
+    return request(app)
+      .get("/api/articlessss")
+      .then((response) => {
+        expect(response.status).toBe(404);
+        expect(response.error.message).toBe(
+          "cannot GET /api/articlessss (404)"
         );
       });
   });
