@@ -40,3 +40,26 @@ exports.fetchAllArticles = () => {
     )
     .then((result) => result.rows);
 };
+
+exports.fetchCommentsByArticleId = (article_id) => {
+  return db
+    .query(
+      `
+      SELECT *
+      FROM comments
+      WHERE article_id = $1
+      ORDER BY created_at DESC;
+    `,
+      [article_id]
+    )
+    .then(({ rows }) => {
+      const comments = rows;
+      if (comments.length === 0) {
+        return Promise.reject({
+          status: 404,
+          message: `No comments found for article_id ${article_id}`,
+        });
+      }
+      return comments;
+    });
+};

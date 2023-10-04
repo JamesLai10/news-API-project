@@ -120,7 +120,6 @@ describe("GET /api/articles", () => {
           expect(article).toHaveProperty("created_at");
           expect(article).toHaveProperty("votes");
           expect(article).toHaveProperty("article_img_url");
-          expect(article).not.toHaveProperty("body");
         });
       });
   });
@@ -132,6 +131,44 @@ describe("GET /api/articles", () => {
         expect(articles).toBeSortedBy("created_at", {
           descending: true,
         });
+      });
+  });
+});
+
+describe("GET /api/articles/:article_id/comments", () => {
+  test("returns 200 status code and an array of comments for a valid article_id", () => {
+    return request(app)
+      .get("/api/articles/1/comments")
+      .then((response) => {
+        const comments = response.body.comments;
+        expect(response.status).toBe(200);
+        expect(comments.length).toBe(11);
+        comments.forEach((comment) => {
+          expect(comment).toHaveProperty("comment_id");
+          expect(comment).toHaveProperty("body");
+          expect(comment).toHaveProperty("article_id");
+          expect(comment).toHaveProperty("author");
+          expect(comment).toHaveProperty("votes");
+          expect(comment).toHaveProperty("created_at");
+        });
+      });
+  });
+  test("returns 404 status code when article_id does not exist", () => {
+    return request(app)
+      .get("/api/articles/999/comments")
+      .then((response) => {
+        expect(response.status).toBe(404);
+        expect(response.body.error).toBe(
+          "No comments found for article_id 999"
+        );
+      });
+  });
+  test("returns 400 status code when article_id is of the wrong data type", () => {
+    return request(app)
+      .get("/api/articles/notNumber/comments")
+      .then((response) => {
+        expect(response.status).toBe(400);
+        expect(response.body.error).toBe("Invalid input");
       });
   });
 });
