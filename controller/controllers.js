@@ -2,6 +2,7 @@ const {
   getTopics,
   fetchArticleById,
   fetchAllArticles,
+  insertComment,
 } = require("../model/models");
 const endpointsData = require("../endpoints.json");
 const articles = require("../db/data/test-data/articles");
@@ -29,6 +30,17 @@ exports.getAllArticles = (req, res, next) => {
   fetchAllArticles()
     .then((articles) => {
       res.status(200).send({ articles });
+    })
+    .catch(next);
+};
+
+exports.postCommentByArticleId = (req, res, next) => {
+  const { article_id } = req.params;
+  const { username, body } = req.body;
+
+  insertComment(article_id, username, body)
+    .then((comment) => {
+      res.status(201).send({ comment });
     })
     .catch(next);
 };
