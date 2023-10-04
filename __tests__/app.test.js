@@ -62,7 +62,7 @@ describe("GET /api/articles/:article_id", () => {
         expect(response.status).toBe(200);
         expect(response.body).toHaveProperty("article");
         const article = response.body.article;
-
+        expect(article.article_id).toBe(1);
         expect(article.title).toBe("Living in the shadow of a great man");
         expect(article.topic).toBe("mitch");
         expect(article.author).toBe("butter_bridge");
@@ -98,6 +98,40 @@ describe("GET /api/articles/:article_id", () => {
         expect(response.error.message).toBe(
           "cannot GET /api/articlessss/1 (404)"
         );
+      });
+  });
+});
+
+describe("GET /api/articles", () => {
+  test("returns 200 status code and an array of articles with adjusted properties", () => {
+    return request(app)
+      .get("/api/articles")
+      .then((response) => {
+        const articles = response.body.articles;
+        expect(response.status).toBe(200);
+        expect(articles.length).toBe(13);
+        articles.forEach((article) => {
+          expect(article).not.toHaveProperty("body");
+          expect(article).toHaveProperty("comment_count");
+          expect(article).toHaveProperty("article_id");
+          expect(article).toHaveProperty("author");
+          expect(article).toHaveProperty("title");
+          expect(article).toHaveProperty("topic");
+          expect(article).toHaveProperty("created_at");
+          expect(article).toHaveProperty("votes");
+          expect(article).toHaveProperty("article_img_url");
+          expect(article).not.toHaveProperty("body");
+        });
+      });
+  });
+  test("returns an array of articles in descending order by date", () => {
+    return request(app)
+      .get("/api/articles")
+      .then((response) => {
+        const articles = response.body.articles;
+        expect(articles).toBeSortedBy("created_at", {
+          descending: true,
+        });
       });
   });
 });
