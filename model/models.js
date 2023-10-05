@@ -108,3 +108,33 @@ exports.fetchCommentsByArticleId = (article_id) => {
       return comments;
     });
 };
+
+exports.updateArticleVotes = (article_id, inc_votes) => {
+  if (typeof inc_votes !== "number") {
+    return Promise.reject({
+      status: 400,
+      message: "Invalid input, must be a number",
+    });
+  }
+
+  return db
+    .query(
+      `
+      UPDATE articles
+      SET votes = votes + $1
+      WHERE article_id = $2
+      RETURNING *;
+    `,
+      [inc_votes, article_id]
+    )
+    .then(({ rows }) => {
+      const updatedArticle = rows[0];
+      if (!updatedArticle) {
+        return Promise.reject({
+          status: 404,
+          message: `No article found for article_id ${article_id}`,
+        });
+      }
+      return updatedArticle;
+    });
+};
