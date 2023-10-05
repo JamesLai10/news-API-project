@@ -146,10 +146,21 @@ describe("GET /api/articles/:article_id/comments", () => {
         comments.forEach((comment) => {
           expect(comment).toHaveProperty("comment_id");
           expect(comment).toHaveProperty("body");
-          expect(comment).toHaveProperty("article_id");
+          expect(comment).toHaveProperty("article_id", 1);
           expect(comment).toHaveProperty("author");
           expect(comment).toHaveProperty("votes");
           expect(comment).toHaveProperty("created_at");
+
+          expect(comment).toEqual(
+            expect.objectContaining({
+              comment_id: expect.any(Number),
+              body: expect.any(String),
+              article_id: expect.any(Number),
+              author: expect.any(String),
+              votes: expect.any(Number),
+              created_at: expect.any(String),
+            })
+          );
         });
       });
   });
@@ -158,9 +169,7 @@ describe("GET /api/articles/:article_id/comments", () => {
       .get("/api/articles/999/comments")
       .then((response) => {
         expect(response.status).toBe(404);
-        expect(response.body.error).toBe(
-          "No comments found for article_id 999"
-        );
+        expect(response.body.error).toBe("article_id '999' does not exist");
       });
   });
   test("returns 400 status code when article_id is of the wrong data type", () => {
@@ -169,6 +178,14 @@ describe("GET /api/articles/:article_id/comments", () => {
       .then((response) => {
         expect(response.status).toBe(400);
         expect(response.body.error).toBe("Invalid input");
+      });
+  });
+  test("returns 200 status code and an empty array for a valid article with no comments", () => {
+    return request(app)
+      .get("/api/articles/2/comments")
+      .then((response) => {
+        expect(response.status).toBe(200);
+        expect(response.body.comments).toEqual([]);
       });
   });
 });

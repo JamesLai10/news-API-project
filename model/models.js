@@ -43,23 +43,27 @@ exports.fetchAllArticles = () => {
 
 exports.fetchCommentsByArticleId = (article_id) => {
   return db
-    .query(
-      `
-      SELECT *
-      FROM comments
-      WHERE article_id = $1
-      ORDER BY created_at DESC;
-    `,
-      [article_id]
-    )
+    .query("SELECT * FROM articles WHERE article_id = $1;", [article_id])
     .then(({ rows }) => {
-      const comments = rows;
-      if (comments.length === 0) {
+      const article = rows[0];
+      if (!article) {
         return Promise.reject({
           status: 404,
-          message: `No comments found for article_id ${article_id}`,
+          message: `article_id '${article_id}' does not exist`,
         });
       }
+      return db.query(
+        `
+          SELECT *
+          FROM comments
+          WHERE article_id = $1
+          ORDER BY created_at DESC;
+        `,
+        [article_id]
+      );
+    })
+    .then(({ rows }) => {
+      const comments = rows;
       return comments;
     });
 };
