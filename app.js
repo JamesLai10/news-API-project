@@ -8,6 +8,7 @@ const {
   postCommentByArticleId,
   getCommentsByArticleId,
   patchArticleVotes,
+  deleteCommentById,
 } = require("./controller/controllers");
 const {
   handleCustomErrors,
@@ -30,6 +31,8 @@ app.post("/api/articles/:article_id/comments", postCommentByArticleId);
 app.get("/api/articles/:article_id/comments", getCommentsByArticleId);
 
 app.patch("/api/articles/:article_id", patchArticleVotes);
+
+app.delete("/api/comments/:comment_id", deleteCommentById);
 
 app.use(handleCustomErrors);
 
