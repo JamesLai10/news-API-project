@@ -272,3 +272,77 @@ describe("GET /api/articles/:article_id/comments", () => {
       });
   });
 });
+
+describe("PATCH /api/articles/:article_id", () => {
+  test("returns 200 status code and updates the article's votes when increasing vote count", () => {
+    const incVotes = { inc_votes: 1 };
+    return request(app)
+      .patch("/api/articles/1")
+      .send(incVotes)
+      .then((response) => {
+        const updatedArticle = response.body.article;
+        expect(response.status).toBe(200);
+        expect(updatedArticle).toHaveProperty(
+          "title",
+          "Living in the shadow of a great man"
+        );
+        expect(updatedArticle).toHaveProperty("topic", "mitch");
+        expect(updatedArticle).toHaveProperty("author", "butter_bridge");
+        expect(updatedArticle).toHaveProperty(
+          "body",
+          "I find this existence challenging"
+        );
+        expect(updatedArticle).toHaveProperty(
+          "created_at",
+          "2020-07-09T20:11:00.000Z"
+        );
+        expect(updatedArticle).toHaveProperty("votes", 101);
+        expect(updatedArticle).toHaveProperty(
+          "article_img_url",
+          "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"
+        );
+      });
+  });
+  test("returns updated article with article's votes when decreasing vote count", () => {
+    const decreaseVote = { inc_votes: -2 };
+    return request(app)
+      .patch("/api/articles/1")
+      .send(decreaseVote)
+      .then((response) => {
+        expect(response.body.article).toMatchObject({
+          article_id: 1,
+          votes: 98,
+        });
+      });
+  });
+  test("returns 404 status code when the article ID does not exist", () => {
+    const incVotes = { inc_votes: 1 };
+    return request(app)
+      .patch("/api/articles/999")
+      .send(incVotes)
+      .then((response) => {
+        expect(response.status).toBe(404);
+        expect(response.body.error).toBe("No article found for article_id 999");
+      });
+  });
+  test("returns 400 status code when inc_votes is not a number", () => {
+    const invalidVote = { inc_votes: "not a number" };
+    return request(app)
+      .patch("/api/articles/1")
+      .send(invalidVote)
+      .then((response) => {
+        expect(response.status).toBe(400);
+        expect(response.body.error).toBe("Invalid input, must be a number");
+      });
+  });
+  test("returns 400 status code when ID is in the wrong data type", () => {
+    const incVotes = { inc_votes: 1 };
+    return request(app)
+      .patch("/api/articles/bananas")
+      .send(incVotes)
+      .then((response) => {
+        expect(response.status).toBe(400);
+        expect(response.body.error).toBe("Invalid input");
+      });
+  });
+});

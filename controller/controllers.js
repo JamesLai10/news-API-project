@@ -4,9 +4,9 @@ const {
   fetchAllArticles,
   insertComment,
   fetchCommentsByArticleId,
+  updateArticleVotes,
 } = require("../model/models");
 const endpointsData = require("../endpoints.json");
-const articles = require("../db/data/test-data/articles");
 
 exports.getAllTopics = (req, res, next) => {
   getTopics()
@@ -41,15 +41,26 @@ exports.postCommentByArticleId = (req, res, next) => {
   insertComment(article_id, username, body)
     .then((comment) => {
       res.status(201).send({ comment });
-  })
-  .catch(next);
+    })
+    .catch(next);
 };
-    
+
 exports.getCommentsByArticleId = (req, res, next) => {
   const { article_id } = req.params;
   fetchCommentsByArticleId(article_id)
     .then((comments) => {
       res.status(200).send({ comments });
+    })
+    .catch(next);
+};
+
+exports.patchArticleVotes = (req, res, next) => {
+  const { article_id } = req.params;
+  const { inc_votes } = req.body;
+
+  updateArticleVotes(article_id, inc_votes)
+    .then((updatedArticle) => {
+      res.status(200).send({ article: updatedArticle });
     })
     .catch(next);
 };
