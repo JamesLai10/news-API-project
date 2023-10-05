@@ -40,3 +40,30 @@ exports.fetchAllArticles = () => {
     )
     .then((result) => result.rows);
 };
+
+exports.fetchCommentsByArticleId = (article_id) => {
+  return db
+    .query("SELECT * FROM articles WHERE article_id = $1;", [article_id])
+    .then(({ rows }) => {
+      const article = rows[0];
+      if (!article) {
+        return Promise.reject({
+          status: 404,
+          message: `article_id '${article_id}' does not exist`,
+        });
+      }
+      return db.query(
+        `
+          SELECT *
+          FROM comments
+          WHERE article_id = $1
+          ORDER BY created_at DESC;
+        `,
+        [article_id]
+      );
+    })
+    .then(({ rows }) => {
+      const comments = rows;
+      return comments;
+    });
+};

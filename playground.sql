@@ -13,3 +13,5 @@ FROM articles
 LEFT JOIN comments ON articles.article_id = comments.article_id
 GROUP BY articles.article_id
 ORDER BY articles.created_at DESC;
+
+SELECT * FROM comments;
