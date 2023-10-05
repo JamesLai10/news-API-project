@@ -135,6 +135,86 @@ describe("GET /api/articles", () => {
   });
 });
 
+describe("POST /api/articles/:article_id/comments", () => {
+  test("returns 201 status code and the posted comment", () => {
+    const newComment = {
+      username: "icellusedkars",
+      body: "A new comment!",
+    };
+    return request(app)
+      .post("/api/articles/1/comments")
+      .send(newComment)
+      .then((response) => {
+        const comment = response.body.comment;
+        expect(response.status).toBe(201);
+        expect(comment).toHaveProperty("comment_id");
+        expect(comment).toHaveProperty("author", newComment.username);
+        expect(comment).toHaveProperty("article_id", 1);
+        expect(comment).toHaveProperty("created_at");
+        expect(comment).toHaveProperty("votes", 0);
+        expect(comment).toHaveProperty("body", newComment.body);
+      });
+  });
+  test("returns 404 status code when the article_id does not exist", () => {
+    const newComment = {
+      username: "icellusedkars",
+      body: "A new comment!",
+    };
+    return request(app)
+      .post("/api/articles/999/comments")
+      .send(newComment)
+      .then((response) => {
+        expect(response.status).toBe(404);
+        expect(response.body.error).toBe("No article found for article_id 999");
+      });
+  });
+  test("returns 400 status code when 'username' or 'body' is missing", () => {
+    const invalidComment = {
+      body: "Bad comment!",
+    };
+    return request(app)
+      .post("/api/articles/1/comments")
+      .send(invalidComment)
+      .then((response) => {
+        expect(response.status).toBe(400);
+        expect(response.body.error).toBe(
+          "Both 'username' and 'body' are required for a comment."
+        );
+      });
+  });
+  test("returns 404 status code when user does not exist", () => {
+    const newComment = {
+      username: "unknownUser",
+      body: "A new comment!",
+    };
+    return request(app)
+      .post("/api/articles/1/comments")
+      .send(newComment)
+      .then((response) => {
+        expect(response.status).toBe(404);
+        expect(response.body.error).toBe("Username 'unknownUser' not found.");
+      });
+  });
+  test("should ignore properties that are not relevant on comment body", () => {
+    const newComment = {
+      username: "icellusedkars",
+      body: "A new comment!",
+      irrelevantProperty: "This should be ignored",
+    };
+    return request(app)
+      .post("/api/articles/1/comments")
+      .send(newComment)
+      .then((response) => {
+        const comment = response.body.comment;
+        expect(comment).toHaveProperty("comment_id");
+        expect(comment).toHaveProperty("author", newComment.username);
+        expect(comment).toHaveProperty("article_id", 1);
+        expect(comment).toHaveProperty("created_at");
+        expect(comment).toHaveProperty("votes", 0);
+        expect(comment).toHaveProperty("body", newComment.body);
+
+        expect(comment).not.toHaveProperty("irrelevantProperty");
+
 describe("GET /api/articles/:article_id/comments", () => {
   test("returns 200 status code and an array of comments for a valid article_id", () => {
     return request(app)
