@@ -5,7 +5,11 @@ const {
   getEndpoints,
   getArticleById,
   getAllArticles,
+
   postCommentByArticleId,
+
+  getCommentsByArticleId,
+
 } = require("./controller/controllers");
 const {
   handleCustomErrors,
@@ -24,6 +28,8 @@ app.get("/api/articles/:article_id", getArticleById);
 app.get("/api/articles", getAllArticles);
 
 app.post("/api/articles/:article_id/comments", postCommentByArticleId);
+
+app.get("/api/articles/:article_id/comments", getCommentsByArticleId);
 
 app.use(handleCustomErrors);
 
