@@ -214,6 +214,9 @@ describe("POST /api/articles/:article_id/comments", () => {
         expect(comment).toHaveProperty("body", newComment.body);
 
         expect(comment).not.toHaveProperty("irrelevantProperty");
+      });
+  });
+});
 
 describe("GET /api/articles/:article_id/comments", () => {
   test("returns 200 status code and an array of comments for a valid article_id", () => {

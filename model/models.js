@@ -79,6 +79,8 @@ exports.insertComment = (article_id, username, body) => {
               return comment;
             });
         });
+    });
+};
 
 exports.fetchCommentsByArticleId = (article_id) => {
   return db
