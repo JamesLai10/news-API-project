@@ -309,7 +309,10 @@ describe("PATCH /api/articles/:article_id", () => {
       .patch("/api/articles/1")
       .send(decreaseVote)
       .then((response) => {
-        expect(response.body.article).toHaveProperty("votes", 98);
+        expect(response.body.article).toMatchObject({
+          article_id: 1,
+          votes: 98,
+        });
       });
   });
   test("returns 404 status code when the article ID does not exist", () => {
@@ -330,6 +333,16 @@ describe("PATCH /api/articles/:article_id", () => {
       .then((response) => {
         expect(response.status).toBe(400);
         expect(response.body.error).toBe("Invalid input, must be a number");
+      });
+  });
+  test("returns 400 status code when ID is in the wrong data type", () => {
+    const incVotes = { inc_votes: 1 };
+    return request(app)
+      .patch("/api/articles/bananas")
+      .send(incVotes)
+      .then((response) => {
+        expect(response.status).toBe(400);
+        expect(response.body.error).toBe("Invalid input");
       });
   });
 });
