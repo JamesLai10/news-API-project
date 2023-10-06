@@ -432,3 +432,16 @@ describe("GET /api/articles (topic query)", () => {
       });
   });
 });
+
+describe("GET /api/articles/:article_id (comment_count)", () => {
+  test("returns 200 status code and an article with comment_count", () => {
+    return request(app)
+      .get("/api/articles/1")
+      .then((response) => {
+        expect(response.status).toBe(200);
+        const article = response.body.article;
+        expect(article).toHaveProperty("article_id", 1);
+        expect(article).toHaveProperty("comment_count", "11");
+      });
+  });
+});
