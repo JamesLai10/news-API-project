@@ -381,10 +381,6 @@ describe("GET /api/users", () => {
         expect(response.status).toBe(200);
         expect(response.body.users.length).toBe(4);
         response.body.users.forEach((user) => {
-          expect(user).toHaveProperty("username");
-          expect(user).toHaveProperty("name");
-          expect(user).toHaveProperty("avatar_url");
-
           expect(user).toEqual(
             expect.objectContaining({
               username: expect.any(String),
@@ -401,6 +397,38 @@ describe("GET /api/users", () => {
       .then((response) => {
         expect(response.status).toBe(404);
         expect(response.error.message).toBe("cannot GET /api/userssss (404)");
+      });
+  });
+});
+
+describe("GET /api/articles (topic query)", () => {
+  test("returns 200 status code and an array of articles for a valid topic", () => {
+    return request(app)
+      .get("/api/articles")
+      .query({ topic: "mitch" })
+      .then((response) => {
+        expect(response.status).toBe(200);
+        const articles = response.body.articles;
+        articles.forEach((article) => {
+          expect(article).toHaveProperty("topic", "mitch");
+        });
+        expect(articles.length).toBe(12);
+      });
+  });
+  test("returns 200 status code and all articles when no topic is specified", () => {
+    return request(app)
+      .get("/api/articles")
+      .then((response) => {
+        expect(response.status).toBe(200);
+        expect(response.body.articles.length).toBe(13);
+      });
+  });
+  test("returns 404 status code when an invalid topic is specified", () => {
+    return request(app)
+      .get("/api/articles?topic=invalidTopic")
+      .then((response) => {
+        expect(response.status).toBe(404);
+        expect(response.body.error).toBe("Topic 'invalidTopic' not found");
       });
   });
 });
