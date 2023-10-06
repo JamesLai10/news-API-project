@@ -7,8 +7,10 @@ const {
   updateArticleVotes,
   deleteComment,
   fetchAllUsers,
+  fetchArticlesByTopic,
 } = require("../model/models");
 const endpointsData = require("../endpoints.json");
+const { query } = require("../db/connection");
 
 exports.getAllTopics = (req, res, next) => {
   getTopics()
@@ -81,6 +83,16 @@ exports.getAllUsers = (req, res, next) => {
   fetchAllUsers()
     .then((users) => {
       res.status(200).send({ users });
+    })
+    .catch(next);
+};
+
+exports.getArticlesByTopic = (req, res, next) => {
+  const { topic } = req.query;
+
+  fetchArticlesByTopic(topic)
+    .then((articles) => {
+      res.status(200).send({ articles });
     })
     .catch(next);
 };
