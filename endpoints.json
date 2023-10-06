@@ -40,7 +40,8 @@
         "body": "I find this existence challenging",
         "created_at": 1594329060000,
         "votes": 100,
-        "article_img_url": "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"
+        "article_img_url": "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+        "comment_count": 11
       }
     }
   },
@@ -64,6 +65,65 @@
           "author": "icellusedkars",
           "body": "I agree!",
           "article_id": 1
+        }
+      ]
+    }
+  },
+  "POST /api/articles/article_id/comments": {
+    "description": "adds a comment for an article by it's article_id",
+    "queries": [],
+    "exampleResponse": {
+      "comment": {
+        "comment_id": 3,
+        "votes": 0,
+        "created_at": 1635466800000,
+        "author": "new_user",
+        "body": "This is a new comment!",
+        "article_id": 1
+      }
+    }
+  },
+  "PATCH /api/articles/:article_id": {
+    "description": "updates an article by article_id",
+    "queries": [],
+    "requestBody": {
+      "description": "An object in the form { inc_votes: newVote }",
+      "example": {
+        "inc_votes": 1
+      }
+    },
+    "exampleResponse": {
+      "article": {
+        "article_id": 1,
+        "title": "Living in the shadow of a great man",
+        "topic": "mitch",
+        "author": "butter_bridge",
+        "body": "I find this existence challenging",
+        "created_at": 1594329060000,
+        "votes": 101,
+        "article_img_url": "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"
+      }
+    }
+  },
+  "DELETE /api/comments/:comment_id": {
+    "description": "Deletes a comment by comment_id",
+    "queries": [],
+    "exampleResponse": {}
+  },
+  "GET /api/users": {
+    "description": "Fetches all users",
+    "queries": [],
+    "exampleResponse": {
+      "users": [
+        {
+          "username": "butter_bridge",
+          "name": "jonny",
+          "avatar_url": "https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg"
+        },
+        {
+          "username": "icellusedkars",
+          "name": "sam",
+          "avatar_url": "https://avatars2.githubusercontent.com/u/24604688?s=460&v=4"
         }
       ]
     }
