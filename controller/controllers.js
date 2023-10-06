@@ -6,6 +6,7 @@ const {
   fetchCommentsByArticleId,
   updateArticleVotes,
   deleteComment,
+  fetchAllUsers,
 } = require("../model/models");
 const endpointsData = require("../endpoints.json");
 
@@ -72,6 +73,14 @@ exports.deleteCommentById = (req, res, next) => {
   deleteComment(comment_id)
     .then(() => {
       res.sendStatus(204);
+    })
+    .catch(next);
+};
+
+exports.getAllUsers = (req, res, next) => {
+  fetchAllUsers()
+    .then((users) => {
+      res.status(200).send({ users });
     })
     .catch(next);
 };
