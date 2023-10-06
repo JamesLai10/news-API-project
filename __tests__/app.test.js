@@ -441,7 +441,7 @@ describe("GET /api/articles/:article_id (comment_count)", () => {
         expect(response.status).toBe(200);
         const article = response.body.article;
         expect(article).toHaveProperty("article_id", 1);
-        expect(article).toHaveProperty("comment_count");
+        expect(article).toHaveProperty("comment_count", "11");
       });
   });
 });
