@@ -381,10 +381,6 @@ describe("GET /api/users", () => {
         expect(response.status).toBe(200);
         expect(response.body.users.length).toBe(4);
         response.body.users.forEach((user) => {
-          expect(user).toHaveProperty("username");
-          expect(user).toHaveProperty("name");
-          expect(user).toHaveProperty("avatar_url");
-
           expect(user).toEqual(
             expect.objectContaining({
               username: expect.any(String),
