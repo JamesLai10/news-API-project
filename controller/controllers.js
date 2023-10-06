@@ -8,6 +8,7 @@ const {
   deleteComment,
   fetchAllUsers,
   fetchArticlesByTopic,
+  fetchArticleWithCommentCount,
 } = require("../model/models");
 const endpointsData = require("../endpoints.json");
 const { query } = require("../db/connection");
